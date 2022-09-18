@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - "master*"
-    tags:
+    release:
       - '*'
 
 env:
@@ -19,8 +19,8 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v2
       - name: Export git tag
-        id: vars
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+        uses: tenhaus/get-release-or-tag@v2
+        id: tag
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -48,5 +48,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: TODOCHECK_VERSION=${{ steps.vars.outputs.tag }}
+          build-args: TODOCHECK_VERSION=${{ steps.tag.outputs.tag }}
 
